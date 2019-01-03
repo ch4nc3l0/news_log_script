@@ -2,11 +2,31 @@
 import psycopg2
 
 
+def connect_to_db():
+    try:
+        conn = psycopg2.connect('dbname=news')
+        cur = conn.cursor()
+        return conn, cur
+    except psycopg2.DatabaseError as error:
+        print(error)
+
+
+def run_query(sql, sql_var, query_name, col_descriptor):
+    conn, cur = connect_to_db()
+    query = sql
+    query_variables = sql_var
+    cur.execute(query, query_variables)
+    print(query_name)
+    result = cur.fetchall()
+    for (column1, column2) in result:
+        print('{} - {} {}'.format(column1, column2, col_descriptor))
+    print('-' * 70)
+    conn.close()
+
+
 # q1: What are the most popular three articles of all time?
 def top_three_posts():
-    conn = psycopg2.connect('dbname=news')
-    print('Querying database for top three posts')
-    cur = conn.cursor()
+    connect_to_db()
     sql = ('''
         select title, views
         from (select right(path, length(path) - 9) as slug,
@@ -20,22 +40,13 @@ def top_three_posts():
         limit 3
         ''')
     sql_variables = ('%200%', '/', )
-    cur.execute(sql, sql_variables)
-    result = ('Top Three Posts:', cur.fetchall())
-    for row in result:
-        print(row)
-    conn.close()
-    print('Connection closed - query complete')
-
-
-top_three_posts()
+    query_name = ('Most popular posts:')
+    run_query(sql, sql_variables, query_name, 'Views')
 
 
 # q2: Who are the most popular article authors of all time?
 def top_three_authors():
-    conn = psycopg2.connect('dbname=news')
-    print('Querying database for top three authors')
-    cur = conn.cursor()
+    connect_to_db()
     sql = ('''
         select name, sum(count) as views
         from (select right(path, length(path) - 9) as slug,
@@ -50,22 +61,13 @@ def top_three_authors():
         limit 3
         ''')
     sql_variables = ('%200%', '/', )
-    cur.execute(sql, sql_variables)
-    result = ('Top Three Authors:', cur.fetchall())
-    for row in result:
-        print(row)
-    conn.close()
-    print('Connection closed - query complete')
-
-
-top_three_authors()
+    query_name = ('Most popular authors:')
+    run_query(sql, sql_variables, query_name, 'Views')
 
 
 # q3: On which days did more than 1% of requests lead to errors?
 def error_days():
-    conn = psycopg2.connect('dbname=news')
-    print('Querying database for days with errors over 1%')
-    cur = conn.cursor()
+    connect_to_db()
     sql = ('''
         select day, error_percent from(
             select  to_char(date(time), 'Month DD, YYYY') as day,
@@ -77,12 +79,11 @@ def error_days():
         order by day;
         ''')
     sql_variables = ('%200%', )
-    cur.execute(sql, sql_variables)
-    result = ('Days with errors over 1% :', cur.fetchall())
-    for row in result:
-        print(row)
-    conn.close()
-    print('Connection closed - query complete')
+    query_name = ('Day(s) with error percent over 1%:')
+    run_query(sql, sql_variables, query_name, 'Percent')
 
 
-error_days()
+if __name__ == '__main__':
+    top_three_posts()
+    top_three_authors()
+    error_days()

@@ -1,13 +1,14 @@
 
-Querying database for top three posts
-Top Three Posts:
-[('Candidate is jerk, alleges rival', 338647L), ('Bears love berries, alleges bear', 253801L), ('Bad things gone, say good people', 170098L)]
-Connection closed - query complete
-Querying database for top three authors
-Top Three Authors:
-[('Ursula La Multa', Decimal('507594')), ('Rudolf von Treppenwitz', Decimal('423457')), ('Anonymous Contributor', Decimal('170098'))]
-Connection closed - query complete
-Querying database for days with errors over 1%
-Days with errors over 1% :
-[('July      17, 2016', Decimal('2.26'))]
-Connection closed - query complete
+Most popular posts:
+Candidate is jerk, alleges rival - 338647 Views
+Bears love berries, alleges bear - 253801 Views
+Bad things gone, say good people - 170098 Views
+----------------------------------------------------------------------
+Most popular authors:
+Ursula La Multa - 507594 Views
+Rudolf von Treppenwitz - 423457 Views
+Anonymous Contributor - 170098 Views
+----------------------------------------------------------------------
+Day(s) with error percent over 1%:
+July      17, 2016 - 2.26 Percent
+----------------------------------------------------------------------
